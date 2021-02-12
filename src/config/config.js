@@ -1,5 +1,5 @@
 require("dotenv").config();
-const appName = "shapes";
+const appName = "series";
 
 module.exports = {
 	appName: appName,
@@ -7,14 +7,14 @@ module.exports = {
 	port: process.env.PORT,
 	development: {
 		url: process.env.DATABASE_URL,
-		dialect: "postgres",
+		dialect: "mysql",
 	},
 	test: {
 		url: process.env.DATABASE_URL,
-		dialect: "postgres",
+		dialect: "mysql",
 	},
 	production: {
 		url: process.env.DATABASE_URL,
-		dialect: "postgres",
+		dialect: "mysql",
 	},
 };
