@@ -17,7 +17,7 @@ module.exports = {
 				allowNull: false,
 			},
 			status: {
-				type: Sequelize.ENUM("ACTVE", "DEAD", "UNKNOWN"),
+				type: Sequelize.ENUM("ACTIVE", "DEAD", "UNKNOWN"),
 				allowNull: false,
 			},
 			stateOfOrigin: {
