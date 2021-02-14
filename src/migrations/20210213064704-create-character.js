@@ -17,14 +17,14 @@ module.exports = {
 				allowNull: false,
 			},
 			status: {
-				type: DataTypes.ENUM("ACTVE", "DEAD", "UNKNOWN"),
+				type: Sequelize.ENUM("ACTVE", "DEAD", "UNKNOWN"),
 				allowNull: false,
 			},
 			stateOfOrigin: {
 				type: Sequelize.STRING,
 			},
 			gender: {
-				type: DataTypes.ENUM("MALE", "FEMALE"),
+				type: Sequelize.ENUM("MALE", "FEMALE"),
 				allowNull: false,
 			},
 			location: {
