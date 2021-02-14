@@ -15,27 +15,31 @@ module.exports = (sequelize, DataTypes) => {
       Episode.hasMany(models.characterEpisodes);
     }
   };
-  Episode.init({
-    name: {
+  Episode.init(
+		{
+			name: {
 				type: DataTypes.STRING,
 				allowNull: false,
 			},
-    releaseDate: {
-      type: DataTypes.DATE,
-      allowNull: false,
-    },
-    episodeCode: {
+			releaseDate: {
+				type: DataTypes.DATE,
+				allowNull: false,
+			},
+			episodeCode: {
 				type: DataTypes.STRING,
 				allowNull: false,
 			},
-    created: {
-      type: DataTypes.DATE,
-      allowNull: false,
-      defaultValue: DataTypes.NOW,
-    }
-  }, {
-    sequelize,
-    modelName: 'episodes',
-  });
+			created: {
+				type: DataTypes.DATE,
+				allowNull: false,
+				defaultValue: DataTypes.NOW,
+			},
+		},
+		{
+			timestamps: false,
+			sequelize,
+			modelName: "episodes",
+		}
+	);
   return Episode;
 };

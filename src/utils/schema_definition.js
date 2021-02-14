@@ -85,4 +85,23 @@ const CreateCharacterSchema = Joi.object({
 	}),
 });
 
-module.exports = { CreateUserSchema, CredentialSchema, CreateLocationSchema, CreateCharacterSchema };
+const CreateEpisodeSchema = Joi.object({
+	name: Joi.string().required().messages({
+		"string.base": `name should be a string.`,
+		"string.empty": `name is required.`,
+		"any.required": `name is required.`,
+	}),
+	episodeCode: Joi.string().required().messages({
+		"string.base": `episodeCode should be a string.`,
+		"string.empty": `episodeCode is required.`,
+		"any.required": `episodeCode is required.`,
+	}),
+	releaseDate: Joi.string().required().isoDate().messages({
+		"string.base": `releaseDate should be a string.`,
+		"string.empty": `releaseDate is required.`,
+		"string.isoDate": `releaseDate must be a date with format Year-Month-Day.`,
+		"any.required": `releaseDate is required.`,
+	}),
+});
+
+module.exports = { CreateUserSchema, CredentialSchema, CreateLocationSchema, CreateCharacterSchema, CreateEpisodeSchema };
