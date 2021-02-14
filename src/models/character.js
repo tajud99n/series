@@ -36,7 +36,7 @@ module.exports = (sequelize, DataTypes) => {
 				type: DataTypes.ENUM("MALE", "FEMALE"),
 				allowNull: false,
 			},
-			location: {
+			locationId: {
 				type: DataTypes.INTEGER,
 			},
 			created: {

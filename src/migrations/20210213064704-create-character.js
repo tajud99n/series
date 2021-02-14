@@ -27,7 +27,7 @@ module.exports = {
 				type: Sequelize.ENUM("MALE", "FEMALE"),
 				allowNull: false,
 			},
-			location: {
+			locationId: {
 				type: Sequelize.INTEGER,
 				allowNull: false,
 				references: {
