@@ -26,4 +26,12 @@ const createToken = async (data) => {
     return token;
 };
 
-module.exports = { validateRequest, hashPassword, createToken  };
+const validatePassword = async (password, hashedPassword) => {
+	const isMatch = await bcrypt.compare(password, hashedPassword);
+	if (isMatch) {
+		return true;
+	}
+	return false;
+};
+
+module.exports = { validateRequest, hashPassword, createToken, validatePassword  };

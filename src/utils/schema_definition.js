@@ -19,7 +19,19 @@ const CreateUserSchema = Joi.object({
 	}),
 });
 
+const CredentialSchema = Joi.object({
+	email: Joi.string().required().email().messages({
+		"string.base": `email should be a string.`,
+		"string.empty": `email is required.`,
+		"string.email": `email should be a valid email pattern.`,
+		"any.required": `email is required.`,
+	}),
+	password: Joi.string().required().min(5).messages({
+		"string.base": `password should be a string.`,
+		"string.empty": `password is required.`,
+		"any.required": `password is required.`,
+	}),
+});
 
 
-
-module.exports = { CreateUserSchema };
+module.exports = { CreateUserSchema, CredentialSchema };
