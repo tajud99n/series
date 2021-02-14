@@ -13,6 +13,10 @@ const UserService = {
 			},
 		});
 	},
+
+	async findUserById(id) {
+		return models.users.findByPk(id);
+	}
 }
 
 module.exports = UserService;

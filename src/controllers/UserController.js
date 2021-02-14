@@ -8,7 +8,7 @@ const UserService = require("../services/UserService");
 
 /**
  * @name createUser
- * @desc A user with correct credentials you should be able login
+ * @desc create a new user
  * Route: POST: '/api/v1/user'
  * @param {object} request
  * @param {object} response

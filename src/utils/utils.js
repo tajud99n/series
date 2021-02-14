@@ -34,4 +34,17 @@ const validatePassword = async (password, hashedPassword) => {
 	return false;
 };
 
-module.exports = { validateRequest, hashPassword, createToken, validatePassword  };
+const verifyToken = async (token) => {
+    try {
+        const decoded = jwt.verify(token, config.jwt.SECRETKEY, {
+            subject: config.appName,
+            algorithms: [config.jwt.alg],
+            issuer: config.jwt.issuer,
+        });
+        return decoded;
+    } catch (error) {
+        throw new Error("invalid token");
+    }
+}
+
+module.exports = { validateRequest, hashPassword, createToken, validatePassword, verifyToken  };

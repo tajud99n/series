@@ -33,5 +33,23 @@ const CredentialSchema = Joi.object({
 	}),
 });
 
+const CreateLocationSchema = Joi.object({
+	name: Joi.string().required().messages({
+		"string.base": `name should be a string.`,
+		"string.empty": `name is required.`,
+		"any.required": `name is required.`,
+	}),
+	longitude: Joi.number().required().messages({
+		"number.base": `longitude should be a number.`,
+		"number.empty": `longitude is required.`,
+		"any.required": `longitude is required.`,
+	}),
+	latitude: Joi.number().required().messages({
+		"number.base": `latitude should be a number.`,
+		"number.empty": `latitude is required.`,
+		"any.required": `latitude is required.`,
+	}),
+});
 
-module.exports = { CreateUserSchema, CredentialSchema };
+
+module.exports = { CreateUserSchema, CredentialSchema, CreateLocationSchema };
