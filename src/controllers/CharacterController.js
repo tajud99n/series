@@ -4,6 +4,7 @@ const { StatusCodes } = require("http-status-codes");
 const { validateRequest } = require("../utils/utils");
 const { CreateCharacterSchema } = require("../utils/schema_definition");
 const CharacterService = require("../services/CharacterService");
+const LocationService = require("../services/LocationService");
 
 
 /**
@@ -27,6 +28,19 @@ exports.createCharacter = async (request, response) => {
 		}
 		const { firstName, lastName, status, stateOfOrigin, gender, locationId } = request.body;
 
+		// *if locationId is sent, check if location exist
+		if (locationId) {
+			const checkLocation = await LocationService.findLocationById(locationId);
+
+			if (!checkLocation) {
+				return http_responder.errorResponse(
+					response,
+					"invalid locationId",
+					StatusCodes.BAD_REQUEST
+				);
+			}
+		}
+
 		const characterObject = {
 			firstName: firstName.toLowerCase(),
 			lastName: lastName.toLowerCase(),
@@ -48,6 +62,7 @@ exports.createCharacter = async (request, response) => {
 			StatusCodes.CREATED
 		);
 	} catch (error) {
+		console.log(error)
 		logger.error(error);
 		return http_responder.errorResponse(
 			response,
