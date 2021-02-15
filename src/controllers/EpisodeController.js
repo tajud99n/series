@@ -178,7 +178,6 @@ exports.getEpisodes = async (request, response) => {
 			meta(count.length, filter.limit, page)
 		);
 	} catch (error) {
-		console.log(error);
 		logger.error(error);
 		return http_responder.errorResponse(
 			response,
