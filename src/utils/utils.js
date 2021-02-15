@@ -3,27 +3,27 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 
 const validateRequest = async (data, validationSchema) => {
-    const errors = validationSchema.validate(data);
+	const errors = validationSchema.validate(data);
 
-    if (errors.error) {
-        return errors.error.details[0].message;
-    }
+	if (errors.error) {
+		return errors.error.details[0].message;
+	}
 };
 
 const hashPassword = async (password) => {
-    const salt = await bcrypt.genSalt(Number(config.salt));
-    const hash = await bcrypt.hash(password, salt);
-    return hash;
-}
+	const salt = await bcrypt.genSalt(Number(config.salt));
+	const hash = await bcrypt.hash(password, salt);
+	return hash;
+};
 
 const createToken = async (data) => {
-    const token = jwt.sign(data, config.jwt.SECRETKEY, {
-        subject: config.appName,
-        algorithm: config.jwt.alg,
-        expiresIn: config.jwt.expires,
-        issuer: config.jwt.issuer,
-    });
-    return token;
+	const token = jwt.sign(data, config.jwt.SECRETKEY, {
+		subject: config.appName,
+		algorithm: config.jwt.alg,
+		expiresIn: config.jwt.expires,
+		issuer: config.jwt.issuer,
+	});
+	return token;
 };
 
 const validatePassword = async (password, hashedPassword) => {
@@ -35,16 +35,37 @@ const validatePassword = async (password, hashedPassword) => {
 };
 
 const verifyToken = async (token) => {
-    try {
-        const decoded = jwt.verify(token, config.jwt.SECRETKEY, {
-            subject: config.appName,
-            algorithms: [config.jwt.alg],
-            issuer: config.jwt.issuer,
-        });
-        return decoded;
-    } catch (error) {
-        throw new Error("invalid token");
-    }
-}
+	try {
+		const decoded = jwt.verify(token, config.jwt.SECRETKEY, {
+			subject: config.appName,
+			algorithms: [config.jwt.alg],
+			issuer: config.jwt.issuer,
+		});
+		return decoded;
+	} catch (error) {
+		throw new Error("invalid token");
+	}
+};
 
-module.exports = { validateRequest, hashPassword, createToken, validatePassword, verifyToken  };
+const meta = (count, limit, page) => {
+	const previousPage = page < 2 ? null : page - 1;
+	const numberOfPages = Math.ceil(count / limit);
+	const nextPage = count - limit * page > 1 ? page + 1 : null;
+
+	return {
+		previousPage,
+		currentPage: page,
+		nextPage,
+		numberOfPages,
+		total: count,
+	};
+};
+
+module.exports = {
+	validateRequest,
+	hashPassword,
+	createToken,
+	validatePassword,
+	verifyToken,
+	meta,
+};

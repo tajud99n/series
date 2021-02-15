@@ -1,8 +1,11 @@
 const logger = require("../config/logger");
 const http_responder = require("../utils/http_response");
 const { StatusCodes } = require("http-status-codes");
-const { validateRequest } = require("../utils/utils");
-const { CreateEpisodeSchema, AddCharacterSchema } = require("../utils/schema_definition");
+const { validateRequest, meta } = require("../utils/utils");
+const {
+	CreateEpisodeSchema,
+	AddCharacterSchema,
+} = require("../utils/schema_definition");
 const EpisodeService = require("../services/EpisodeService");
 const CharacterService = require("../services/CharacterService");
 
@@ -75,10 +78,10 @@ exports.addCharacter = async (request, response) => {
 			);
 		}
 
-		const { episodeId, characterId } = request.body
-		
+		const { episodeId, characterId } = request.body;
+
 		// check if episode exist
-		const checkEpisode = await EpisodeService.findEpisodeById(episodeId)
+		const checkEpisode = await EpisodeService.findEpisodeById(episodeId);
 		if (!checkEpisode) {
 			return http_responder.errorResponse(
 				response,
@@ -88,7 +91,9 @@ exports.addCharacter = async (request, response) => {
 		}
 
 		// check if character exist
-		const checkCharacter = await CharacterService.findCharacterById(characterId)
+		const checkCharacter = await CharacterService.findCharacterById(
+			characterId
+		);
 		if (!checkCharacter) {
 			return http_responder.errorResponse(
 				response,
@@ -98,7 +103,10 @@ exports.addCharacter = async (request, response) => {
 		}
 
 		// check if character has been added to episode
-		const check = await EpisodeService.findCharacterInEpisode({ episodeId, characterId })
+		const check = await EpisodeService.findCharacterInEpisode({
+			episodeId,
+			characterId,
+		});
 		if (check) {
 			return http_responder.errorResponse(
 				response,
@@ -108,17 +116,21 @@ exports.addCharacter = async (request, response) => {
 		}
 
 		// add character to episode
-		const addCharacter = await EpisodeService.addCharacterToEpisode({ episodeId, characterId });
-
-		// Eager load characters in an episode
-		const episodeCharacters = await EpisodeService.getEpisodeCharacters(episodeId);
-		const characters = [];
-
-		episodeCharacters.forEach(element => {
-			characters.push(element.dataValues.character)
+		const addCharacter = await EpisodeService.addCharacterToEpisode({
+			episodeId,
+			characterId,
 		});
 
-		
+		// Eager load characters in an episode
+		const episodeCharacters = await EpisodeService.getEpisodeCharacters(
+			episodeId
+		);
+		const characters = [];
+
+		episodeCharacters.forEach((element) => {
+			characters.push(element.dataValues.character);
+		});
+
 		return http_responder.successResponse(
 			response,
 			{
@@ -129,6 +141,44 @@ exports.addCharacter = async (request, response) => {
 			StatusCodes.CREATED
 		);
 	} catch (error) {
+		logger.error(error);
+		return http_responder.errorResponse(
+			response,
+			"internal_server_error",
+			StatusCodes.INTERNAL_SERVER_ERROR
+		);
+	}
+};
+
+/**
+ * @name getEpisodes
+ * @desc fetch all episodes
+ * Route: GET: '/api/v1/episode'
+ * @param {object} request
+ * @param {object} response
+ * @returns {json} json
+ */
+exports.getEpisodes = async (request, response) => {
+	try {
+		const filter = {};
+		filter.limit = parseInt(request.query.limit)
+			? parseInt(request.query.limit)
+			: 10;
+		const page = parseInt(request.query.page)
+			? parseInt(request.query.page)
+			: 1;
+		filter.offSet = (page - 1) * filter.limit;
+		const { count, rows } = await EpisodeService.getAllEpisodes(filter);
+
+		return http_responder.successResponse(
+			response,
+			{ result: rows },
+			"episodes returned successfully",
+			StatusCodes.OK,
+			meta(count.length, filter.limit, page)
+		);
+	} catch (error) {
+		console.log(error);
 		logger.error(error);
 		return http_responder.errorResponse(
 			response,

@@ -1,3 +1,4 @@
+const { Sequelize } = require("../models");
 const models = require("../models");
 
 const EpisodeService = {
@@ -24,17 +25,36 @@ const EpisodeService = {
 
 	async getEpisodeCharacters(episodeId) {
 		return models.characterEpisodes.findAll({
-			// include: [{
-				// model: models.episodes,
-				
-					where: {
-						episodeId
+			where: {
+				episodeId,
 			},
-			include: [models.characters, models.episodes]
-					
-			// }]
+			include: [models.characters, models.episodes],
 		});
 	},
+
+	async getAllEpisodes(filter) {
+		return models.episodes.findAndCountAll({
+			subQuery: false,
+			attributes: {
+				include: [
+					[
+						Sequelize.fn("COUNT", Sequelize.col("comments.episodeId")),
+						"commentsCount",
+					],
+				],
+			},
+			include: [
+				{
+					model: models.comments,
+					attributes: [],
+				},
+			],
+			group: ["episodes.id"],
+			offset: filter.offSet,
+			limit: filter.limit,
+			order: [["releaseDate", "ASC"]],
+		});
+	}
 };
 
 module.exports = EpisodeService;

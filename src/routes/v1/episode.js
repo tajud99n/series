@@ -6,6 +6,7 @@ const CommentController = require("../../controllers/CommentController");
 const router = Router();
 
 router.post("/", authToken, authUser, EpisodeController.createEpisode);
+router.get("/", EpisodeController.getEpisodes);
 router.post("/add-character", authToken, authUser, EpisodeController.addCharacter);
 router.post("/:episodeId/comment", authToken, authUser, CommentController.addComment);
 
