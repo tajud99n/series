@@ -125,7 +125,7 @@ exports.addCharacter = async (request, response) => {
 				episode: episodeCharacters[0].episode,
 				characters,
 			},
-			"episode created successfully",
+			"character added to episode successfully",
 			StatusCodes.CREATED
 		);
 	} catch (error) {
