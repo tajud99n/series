@@ -62,7 +62,6 @@ exports.createCharacter = async (request, response) => {
 			StatusCodes.CREATED
 		);
 	} catch (error) {
-		console.log(error)
 		logger.error(error);
 		return http_responder.errorResponse(
 			response,
