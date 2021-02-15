@@ -5,5 +5,6 @@ const { authToken, authUser } = require("../../middlewares/auth");
 const router = Router();
 
 router.post("/", authToken, authUser, CharacterController.createCharacter);
+router.get("/", CharacterController.getCharacters);
 
 module.exports = router;

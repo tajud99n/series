@@ -1,11 +1,10 @@
 const logger = require("../config/logger");
 const http_responder = require("../utils/http_response");
 const { StatusCodes } = require("http-status-codes");
-const { validateRequest } = require("../utils/utils");
+const { validateRequest, meta } = require("../utils/utils");
 const { CreateCharacterSchema } = require("../utils/schema_definition");
 const CharacterService = require("../services/CharacterService");
 const LocationService = require("../services/LocationService");
-
 
 /**
  * @name createCharacter
@@ -26,7 +25,14 @@ exports.createCharacter = async (request, response) => {
 				StatusCodes.BAD_REQUEST
 			);
 		}
-		const { firstName, lastName, status, stateOfOrigin, gender, locationId } = request.body;
+		const {
+			firstName,
+			lastName,
+			status,
+			stateOfOrigin,
+			gender,
+			locationId,
+		} = request.body;
 
 		// *if locationId is sent, check if location exist
 		if (locationId) {
@@ -60,6 +66,72 @@ exports.createCharacter = async (request, response) => {
 			{ character: { ...dataValues } },
 			"character created successfully",
 			StatusCodes.CREATED
+		);
+	} catch (error) {
+		logger.error(error);
+		return http_responder.errorResponse(
+			response,
+			"internal_server_error",
+			StatusCodes.INTERNAL_SERVER_ERROR
+		);
+	}
+};
+
+/**
+ * @name getCharacters
+ * @desc fetch all episodes
+ * Route: GET: '/api/v1/character'
+ * @param {object} request
+ * @param {object} response
+ * @returns {json} json
+ */
+exports.getCharacters = async (request, response) => {
+	try {
+		const filter = {};
+		const sort = {};
+		filter.limit = parseInt(request.query.limit)
+			? parseInt(request.query.limit)
+			: 10;
+		const page = parseInt(request.query.page)
+			? parseInt(request.query.page)
+			: 1;
+		filter.offSet = (page - 1) * filter.limit;
+		sort.value = request.query.sortValue == "name" ? "firstName" : "gender";
+		sort.order = request.query.sortOrder == "asc" ? "ASC" : "DESC";
+		const query = {};
+		switch (request.query.filterType) {
+			case "gender":
+				query.where = {
+					gender: request.query.filterValue
+						? [request.query.filterValue.toUpperCase()]
+						: ["MALE", "FEMALE"],
+				};
+				break;
+			case "location":
+				query.where = {
+					location: request.query.filterValue,
+				};
+				break;
+			default:
+				query.where = {
+					status: request.query.filterValue
+						? [request.query.filterValue.toUpperCase()]
+						: ["ACTIVE", "UNKNOWN", "DEAD"],
+				};
+				break;
+		}
+		const { count, rows } = await CharacterService.getAllCharacters(
+			filter,
+			sort,
+			query
+		);
+
+		return http_responder.successResponse(
+			response,
+			{ result: rows },
+			"characters returned successfully",
+			StatusCodes.OK,
+			meta(count, filter.limit, page)
 		);
 	} catch (error) {
 		logger.error(error);
