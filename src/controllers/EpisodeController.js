@@ -57,7 +57,7 @@ exports.createEpisode = async (request, response) => {
 
 /**
  * @name addCharacter
- * @desc create a new episode
+ * @desc create a character
  * Route: POST: '/api/v1/episode/add-character'
  * @param {object} request
  * @param {object} response
