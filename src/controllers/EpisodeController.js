@@ -8,6 +8,7 @@ const {
 } = require("../utils/schema_definition");
 const EpisodeService = require("../services/EpisodeService");
 const CharacterService = require("../services/CharacterService");
+const CommentService = require("../services/CommentService");
 
 /**
  * @name createEpisode
@@ -176,6 +177,45 @@ exports.getEpisodes = async (request, response) => {
 			"episodes returned successfully",
 			StatusCodes.OK,
 			meta(count.length, filter.limit, page)
+		);
+	} catch (error) {
+		logger.error(error);
+		return http_responder.errorResponse(
+			response,
+			"internal_server_error",
+			StatusCodes.INTERNAL_SERVER_ERROR
+		);
+	}
+};
+
+/**
+ * @name getEpisodeComments
+ * @desc fetch all comments on an episode
+ * Route: GET: '/api/v1/episode/:episodeId'
+ * @param {object} request
+ * @param {object} response
+ * @returns {json} json
+ */
+exports.getEpisodeComments = async (request, response) => {
+	try {
+		const { episodeId } = request.params;
+		const filter = {};
+		filter.limit = parseInt(request.query.limit)
+			? parseInt(request.query.limit)
+			: 10;
+		const page = parseInt(request.query.page)
+			? parseInt(request.query.page)
+			: 1;
+		filter.offSet = (page - 1) * filter.limit;
+
+		const {count, rows} = await CommentService.getEpisodeComments(episodeId, filter);
+
+		return http_responder.successResponse(
+			response,
+			{ result: rows },
+			"comments returned successfully",
+			StatusCodes.OK,
+			meta(count, filter.limit, page)
 		);
 	} catch (error) {
 		logger.error(error);
