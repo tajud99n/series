@@ -117,4 +117,30 @@ const AddCharacterSchema = Joi.object({
 	}),
 });
 
-module.exports = { CreateUserSchema, CredentialSchema, CreateLocationSchema, CreateCharacterSchema, CreateEpisodeSchema, AddCharacterSchema };
+const AddCommentSchema = Joi.object({
+	episodeId: Joi.number().required().messages({
+		"number.base": `episodeId should be a number.`,
+		"number.empty": `episodeId is required.`,
+		"any.required": `episodeId is required.`,
+	}),
+	comment: Joi.string().required().max(249).messages({
+		"string.base": `comment should be a string.`,
+		"string.empty": `comment is required.`,
+		"any.required": `comment is required.`,
+	}),
+	ipAddressLocation: Joi.string().required().max(249).messages({
+		"string.base": `ipAddressLocation should be a number.`,
+		"string.empty": `ipAddressLocation is required.`,
+		"any.required": `ipAddressLocation is required.`,
+	}),
+});
+
+module.exports = {
+	CreateUserSchema,
+	CredentialSchema,
+	CreateLocationSchema,
+	CreateCharacterSchema,
+	CreateEpisodeSchema,
+	AddCharacterSchema,
+	AddCommentSchema,
+};
