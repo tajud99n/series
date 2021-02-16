@@ -1,7 +1,7 @@
 const expect = require("expect");
 const request = require("supertest");
 const { app } = require("./../../app");
-const { users, seedUsers } = require("../seeds/seed");
+const { users, seedUsers } = require("../helpers/seed");
 
 describe("User", () => {
 	beforeEach(async function () {
