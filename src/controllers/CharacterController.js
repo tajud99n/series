@@ -142,3 +142,48 @@ exports.getCharacters = async (request, response) => {
 		);
 	}
 };
+
+/**
+ * @name search
+ * @desc fetch all episodes
+ * Route: GET: '/api/v1/search'
+ * @param {object} request
+ * @param {object} response
+ * @returns {json} json
+ */
+exports.search = async (request, response) => {
+	try {
+		const { q } = request.query;
+		const filter = {};
+		filter.limit = parseInt(request.query.limit)
+			? parseInt(request.query.limit)
+			: 10;
+		const page = parseInt(request.query.page)
+			? parseInt(request.query.page)
+			: 1;
+		filter.offSet = (page - 1) * filter.limit;
+		const { count, rows } = await CharacterService.searchCharacters(filter, q);
+		const result = [];
+		if (rows.length > 0) {
+			for (const element of rows) {
+				for (const ec of element.characterEpisodes) {
+					result.push(ec.episode);
+				}
+			}
+		}
+		return http_responder.successResponse(
+			response,
+			{ result },
+			"result returned successfully",
+			StatusCodes.OK,
+			meta(count, filter.limit, page)
+		);
+	} catch (error) {
+		logger.error(error);
+		return http_responder.errorResponse(
+			response,
+			"internal_server_error",
+			StatusCodes.INTERNAL_SERVER_ERROR
+		);
+	}
+};
