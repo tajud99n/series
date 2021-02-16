@@ -14,6 +14,7 @@ const users = [
 	},
 ];
 
+
 const seedUsers = async () => {
 	try {
 		await models.users.destroy({
@@ -32,4 +33,6 @@ const seedUsers = async () => {
 
 
 
-module.exports = { users, seedUsers  };
+
+
+module.exports = { users, seedUsers, locations, seedLocations  };
