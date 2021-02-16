@@ -36,4 +36,29 @@ describe("User", () => {
 				.end(done);
 		});
 	});
+	describe("Login", () => {
+		it("should login user and return auth token", (done) => {
+			request(app)
+				.post("/api/v1/login")
+				.send({
+					email: users[0].email,
+					password: "password",
+				})
+				.expect(200)
+				.expect((res) => {
+					expect(res.body.data).toHaveProperty("token");
+				})
+				.end(done);
+		});
+		it("should reject invalid login", (done) => {
+			request(app)
+				.post("/api/v1/login")
+				.send({
+					email: users[0].email,
+					password: "passwordfake",
+				})
+				.expect(401)
+				.end(done);
+		});
+	});
 });
