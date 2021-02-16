@@ -1,14 +1,17 @@
 const expect = require("expect");
 const request = require("supertest");
 const { app } = require("./../../app");
-const { users, seedUsers, locations, seedLocations } = require("../helpers/seed");
+const { users, seedUsers, seedLocations, seedCharacters } = require("../helpers/seed");
 const { loginUser } = require("../helpers/helper");
 
 describe("Character", () => {
 	let loggedInUser;
 
 	beforeEach(async function () {
-		await seedUsers();
+        await seedUsers();
+        await seedLocations();
+        await seedCharacters();
+
 		loggedInUser = await loginUser(users[0].email, "password");
 	});
 	describe("Create Character", () => {
@@ -44,5 +47,18 @@ describe("Character", () => {
 				.expect(201)
 				.end(done);
 		});
-	});
+    });
+    
+    describe("Get All Characters", () => {
+			
+			it("should return all characters", (done) => {
+				request(app)
+					.get("/api/v1/character?filterValue=ACTIVE")
+					.expect(200)
+                    .expect((res) => {
+						expect(res.body.data.result).toHaveLength(1);
+					})
+					.end(done);
+			});
+		});
 });

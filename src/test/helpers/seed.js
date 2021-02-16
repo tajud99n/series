@@ -14,6 +14,22 @@ const users = [
 	},
 ];
 
+const characters = [
+	{
+		firstName: "test",
+		lastName: "character",
+		status: "ACTIVE",
+		stateOfOrigin: "test",
+		gender: "MALE",
+	},
+	{
+		firstName: "seed",
+		lastName: "two",
+		status: "UNKNOWN",
+		stateOfOrigin: "test",
+		gender: "FEMALE",
+	},
+];
 
 const seedUsers = async () => {
 	try {
@@ -31,8 +47,37 @@ const seedUsers = async () => {
 	}
 };
 
+const seedLocations = async () => {
+	try {
+		await models.locations.destroy({
+			where: {},
+			cascade: true,
+		});
 
+		const l = await models.locations.create({
+			name: "test seed",
+			latitude: "2.987603",
+			longitude: "2.987603",
+		});
+		console.log(l, "LLLLLLLLLLLLL");
+		characters[0].locationId = l.dataValues.id;
+	} catch (error) {
+		console.log("Location SEEDING", error);
+	}
+};
 
+const seedCharacters = async () => {
+	try {
+		await models.characters.destroy({
+			where: {},
+			cascade: true,
+		});
 
+		await models.characters.create(characters[0]);
+		await models.characters.create(characters[1]);
+	} catch (error) {
+		console.log("Characters SEEDING", error);
+	}
+};
 
-module.exports = { users, seedUsers, locations, seedLocations  };
+module.exports = { users, seedUsers, seedLocations, seedCharacters };
